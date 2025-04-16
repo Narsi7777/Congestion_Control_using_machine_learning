@@ -1,66 +1,46 @@
-# NS-2 Congestion Control Simulation
+# 🚦 NS-2 Congestion Control Simulation with CatBoost Integration
 
-## Overview
-This project simulates network congestion in a wireless ad-hoc network using NS-2. The simulation records key network performance metrics such as packet loss, throughput, delay, and jitter. A Bash script automates multiple runs of the simulation with different parameters and collects the results in a CSV file for further analysis.
+## 🧠 Overview
 
-Currently, this project is in its early stages. The primary focus has been on **data collection**, and further work is needed to develop and implement congestion control mechanisms based on the gathered data.
+This project simulates network congestion in a wireless ad-hoc network using **NS-2** and leverages **Machine Learning (CatBoost)** to dynamically predict and mitigate congestion before simulation. 
 
-## Files
-- **congestion.tcl** - The main NS-2 TCL script for simulating network congestion.
-- **run_simulation.sh** - Bash script to run multiple NS-2 simulations with randomized parameters and collect data.
-- **metrics.awk** - AWK script to parse the NS-2 trace file and extract network performance metrics.
-- **network_metrics.csv** - Output file containing collected simulation results in CSV format.
+The project consists of two phases:
+1. **Data Collection Phase**: Using traditional NS-2 scripts and automation tools to gather performance metrics under various conditions.
+2. **ML-Based Control Phase**: Applying a CatBoost classifier to predict congestion and dynamically adjust simulation parameters to prevent it.
 
-## Requirements
+---
+
+## 📂 Project Structure
+
+### 🔧 Traditional NS-2 Simulation & Data Collection
+- `congestion.tcl` – NS-2 TCL script to simulate network behavior.
+- `run_simulation.sh` – Bash script to run 50 simulations with randomized parameters.
+- `metrics.awk` – AWK script to extract performance metrics from NS-2 trace files.
+- `network_metrics.csv` – Output file containing collected metrics in CSV format.
+
+### 🧠 ML-Based Congestion Control (CatBoost)
+- `train_catboost_model.py` – Trains a CatBoost classifier using labeled data (`output.csv`).
+- `simulate_with_catboost.py` – Runs NS-2 simulations, adjusting parameters using ML predictions.
+- `catboost_predictor.py` – Core logic for predicting and adjusting based on ML model.
+- `output.csv` – Labeled dataset for training, containing features and congestion labels.
+- `catboost_congestion_model.pkl` – Trained ML model (auto-generated after training).
+
+---
+
+## ✅ Requirements
+
 - **NS-2 (Network Simulator 2)**
-- **AWK (for processing trace files)**
-- **Bash (for automation script)**
+- **AWK** – For processing trace files.
+- **Python 3.8+** with:
+  - `catboost`
+  - `scikit-learn`
+  - `pandas`
+  - `joblib`
 
-## How to Run
-### 1. Run a Single Simulation
-To run a single NS-2 simulation, use:
-```sh
+---
+
+## 🚀 How to Run
+
+### 🔹 1. Run a Single Traditional NS-2 Simulation
+```bash
 ns congestion.tcl <num_nodes> <x_dim> <y_dim> <packet_size> <rate>
-```
-Example:
-```sh
-ns congestion.tcl 20 500 500 1024 5Mb
-```
-
-### 2. Run Multiple Simulations and Collect Data
-Use the Bash script to run 50 randomized simulations and store results in `network_metrics.csv`:
-```sh
-chmod +x run_simulation.sh
-./run_simulation.sh
-```
-
-### 3. Analyze Metrics
-The `network_metrics.csv` file will contain:
-```
-Nodes,Packets Sent,Packets Received,Packet Loss,Packet Delivery Ratio,Avg Delay,Throughput,Avg Jitter
-...
-```
-
-## Output Metrics Explained
-- **Packets Sent**: Total packets transmitted.
-- **Packets Received**: Successfully received packets.
-- **Packet Loss**: Difference between sent and received packets.
-- **Packet Delivery Ratio**: Percentage of received packets over sent packets.
-- **Avg Delay**: Average time taken for packet transmission.
-- **Throughput**: Overall data rate achieved in the simulation.
-- **Avg Jitter**: Variation in packet delay.
-
-## Visualization
-To visualize the network simulation, open the `.nam` file generated after the simulation:
-```sh
-nam congestion.nam
-```
-
-## Future Work
-- Implement congestion control mechanisms based on collected data.
-- Explore machine learning models to predict and mitigate congestion.
-- Optimize network performance by tuning protocol parameters.
-
-## License
-This project is open-source and can be used for research and academic purposes.
-
